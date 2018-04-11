@@ -141,8 +141,6 @@ include_directories(
 add_executable(motor_c src/collect_data.cpp)
 target_link_libraries(motor_c ${catkin_LIBRARIES})
 
-
-
 #add_dependencies(listener beginner_tutorials_generate_messages_cpp)
 
 ## Rename C++ executable without prefix

@@ -1,0 +1,12 @@
+<launch>
+  <node pkg="phidgets_project" type="phidgets_pub.py" name="phidgets_sharp"/>
+  <node pkg="phidgets_project" type="motor_c" name="motor_control"/>
+</launch>
+
+
+
+
+
+
+
+

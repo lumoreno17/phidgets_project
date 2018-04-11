@@ -1,5 +1,6 @@
 #include "ros/ros.h"
 #include "std_msgs/Float32.h"
+#include "std_msgs/Float64.h"
 #include "iostream"
 #include "phidgets_project/JoyPhid.h"
 class Luciana
@@ -10,26 +11,58 @@ class Luciana
         
         Luciana();
         
-        std_msgs::Float32 value;
-        
-        phidgets_project::JoyPhid joyphid;
+        std_msgs::Float32 sensor_distance;
+        std_msgs::Float64 vel_zero;
+        std_msgs::Float64 vel_antes;
+        std_msgs::Float64 vel_joystick;
+        int dir_joystick;
+     
+        phidgets_project::JoyPhid joyphid_data;
    
     
-        phidgets_project::JoyPhid y;
+        //phidgets_project::JoyPhid y;
         ros::NodeHandle n;
         ros::Publisher pub;
         ros::Subscriber sub;
         ros::Subscriber sub2;
   
-        float set_dist;
-        int count;
+        float obstacle_distance,var;
+        
         
         
         
         void chatterCallback (const std_msgs::Float32::ConstPtr& msg)
-        { 
-            value = *msg;
-              std::cout <<value.data << "  - else\n";
+        {   
+            //std::cout<<"chatterCallBack\n";
+            obstacle_distance = 7.5;
+            vel_zero.data = 0.0;
+            sensor_distance = *msg;
+            
+       
+            if (sensor_distance.data >= obstacle_distance)
+            {    
+                if (vel_antes.data != vel_joystick.data)
+                {
+               
+                    pub.publish(vel_joystick);
+                }
+             
+                vel_antes.data=vel_joystick.data;
+            }
+           
+    
+            else 
+            {
+                //std::cout<<"estou no else\n";
+                if (vel_antes.data != vel_zero.data)
+                {
+               
+                    pub.publish(vel_zero);
+                }
+                vel_antes=vel_zero;
+                
+    
+            }    
     
         }
        
@@ -40,41 +73,24 @@ class Luciana
        
        void chatterCallbackjoy (const phidgets_project::JoyPhid::ConstPtr& msg)
         { 
-            y.vel=0;
-            y.dir=1;
-            
-            joyphid = *msg;
-            set_dist=7.5;
-              
-            ROS_INFO("[%d]",count); 
-            if (value.data >= set_dist)
-            {    
-                pub.publish(joyphid);
-                count=1;
-                std::cout << "if\n";
-        
-            }
-            
-    
-            else
-            {
-                pub.publish(y);
-                count=0;
-                ROS_INFO("HERE");
-                
-            }      
+            //std::cout<<"estou no chatterjoy\n";
+            vel_joystick.data = msg->vel;    
+            dir_joystick=msg->dir;
+            vel_joystick.data = vel_joystick.data*dir_joystick;
+            //vel_joystick.data = 5.0;   
   
-       }
+        }
   
               
 };
 
 Luciana::Luciana()
         {   
-           
-            pub = n.advertise<phidgets_project::JoyPhid>("motor_topic", 10);
-            sub = n.subscribe("obstacle_distance", 1000, &Luciana::chatterCallback, this);
+            vel_antes.data = 3.0;
+            pub = n.advertise<std_msgs::Float64>("pan_controller/command", 10);
             sub2 = n.subscribe("joy_cmd", 1000, &Luciana::chatterCallbackjoy, this);
+            sub = n.subscribe("obstacle_distance", 1000, &Luciana::chatterCallback, this);
+            
             
         }
 

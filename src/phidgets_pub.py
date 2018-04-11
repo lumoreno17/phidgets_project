@@ -89,7 +89,10 @@ except PhidgetException as e:
 
 print("Gathering data for 100 seconds...")
 
-time.sleep(100)
+#time.sleep(100)
+while True: pass
+
+
 
 try:
     ch1.close()

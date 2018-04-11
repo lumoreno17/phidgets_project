@@ -1,2 +1,2 @@
-float32 vel
+float64 vel
 int32 dir
