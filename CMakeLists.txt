@@ -1,12 +1,6 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(phidgets_project)
 
-## Compile as C++11, supported in ROS Kinetic and newer
-# add_compile_options(-std=c++11)
-
-## Find catkin macros and libraries
-## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
-## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   rospy
@@ -142,6 +136,8 @@ add_executable(motor_c src/collect_data.cpp)
 target_link_libraries(motor_c ${catkin_LIBRARIES})
 
 #add_dependencies(listener beginner_tutorials_generate_messages_cpp)
+
+
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the

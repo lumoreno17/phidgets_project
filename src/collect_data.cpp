@@ -3,6 +3,7 @@
 #include "std_msgs/Float64.h"
 #include "iostream"
 #include "phidgets_project/JoyPhid.h"
+#include "joy_controller/Joymsg.h"
 class Luciana
 {
 
@@ -17,7 +18,8 @@ class Luciana
         std_msgs::Float64 vel_joystick;
         int dir_joystick;
      
-        phidgets_project::JoyPhid joyphid_data;
+        //phidgets_project::JoyPhid joyphid_data;
+        joy_controller::Joymsg joyphid_data;
    
     
         //phidgets_project::JoyPhid y;
@@ -70,8 +72,8 @@ class Luciana
        
        
        
-       
-       void chatterCallbackjoy (const phidgets_project::JoyPhid::ConstPtr& msg)
+       //void chatterCallbackjoy (const phidgets_project::Joyphid::ConstPtr& msg)
+       void chatterCallbackjoy (const joy_controller::Joymsg::ConstPtr& msg)
         { 
             //std::cout<<"estou no chatterjoy\n";
             vel_joystick.data = msg->vel;    
