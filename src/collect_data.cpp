@@ -2,15 +2,14 @@
 #include "std_msgs/Float32.h"
 #include "std_msgs/Float64.h"
 #include "iostream"
-#include "phidgets_project/JoyPhid.h"
 #include "joy_controller/Joymsg.h"
-class Luciana
+class PhidgetsController
 {
 
    
     public:
         
-        Luciana();
+        PhidgetsController();
         
         std_msgs::Float32 sensor_distance;
         std_msgs::Float64 vel_zero;
@@ -18,11 +17,7 @@ class Luciana
         std_msgs::Float64 vel_joystick;
         int dir_joystick;
      
-        //phidgets_project::JoyPhid joyphid_data;
-        joy_controller::Joymsg joyphid_data;
-   
-    
-        //phidgets_project::JoyPhid y;
+
         ros::NodeHandle n;
         ros::Publisher pub;
         ros::Subscriber sub;
@@ -35,7 +30,6 @@ class Luciana
         
         void chatterCallback (const std_msgs::Float32::ConstPtr& msg)
         {   
-            //std::cout<<"chatterCallBack\n";
             obstacle_distance = 7.5;
             vel_zero.data = 0.0;
             sensor_distance = *msg;
@@ -55,7 +49,6 @@ class Luciana
     
             else 
             {
-                //std::cout<<"estou no else\n";
                 if (vel_antes.data != vel_zero.data)
                 {
                
@@ -72,28 +65,25 @@ class Luciana
        
        
        
-       //void chatterCallbackjoy (const phidgets_project::Joyphid::ConstPtr& msg)
+       
        void chatterCallbackjoy (const joy_controller::Joymsg::ConstPtr& msg)
         { 
-            //std::cout<<"estou no chatterjoy\n";
             vel_joystick.data = msg->vel;    
             dir_joystick=msg->dir;
-            vel_joystick.data = vel_joystick.data*dir_joystick;
-            //vel_joystick.data = 5.0;   
+            vel_joystick.data = vel_joystick.data*dir_joystick; 
   
         }
   
               
 };
 
-Luciana::Luciana()
+PhidgetsController::PhidgetsController()
         {   
             vel_antes.data = 3.0;
             pub = n.advertise<std_msgs::Float64>("pan_controller/command", 10);
-            sub2 = n.subscribe("joy_cmd", 1000, &Luciana::chatterCallbackjoy, this);
-            sub = n.subscribe("obstacle_distance", 1000, &Luciana::chatterCallback, this);
-            
-            
+            sub2 = n.subscribe("joy_cmd", 1000, &PhidgetsController::chatterCallbackjoy, this);
+            sub = n.subscribe("obstacle_distance", 1000, &PhidgetsController::chatterCallback, this);
+              
         }
 
 
@@ -102,7 +92,7 @@ int main(int argc, char **argv)
 
   ros::init(argc, argv, "motor_control");
 
-  Luciana l;
+  PhidgetsController phid_control;
  
   //ros::Rate loop_rate(100);
   ros::spin();
