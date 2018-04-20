@@ -26,6 +26,9 @@ dynamixel_controller package: http://wiki.ros.org/dynamixel_controllers/Tutorial
 
 Run it !
 ------------------------------
-Open the terminal and type
+Open the terminal and type:
+
+```
 roslaunch phidgets_project joy_phid_controller.launch
+```
 
